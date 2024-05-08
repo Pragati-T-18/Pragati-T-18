@@ -1,0 +1,47 @@
+DATA SEGMENT 
+  HEX DB 0FFH 
+  DECI DW ? 
+DATA ENDS 
+
+CODE SEGMENT 
+ASSUME CS:CODE, DS:DATA 
+
+START: 
+  MOV DX, DATA
+  MOV DS, DX ;Initialize data segment
+  MOV AL, HEX ;Move decimal no. to AL
+  AND AL, 0FH ;Separate the lower nibble 
+  MOV DL, AL ;store lower nibble to DL 
+  MOV AL, HEX ;Move decimal no. to AL 
+  AND AL, 0F0H ;Separate upper nibble 
+  MOV CL, 04H ;Move upper nibble to 
+  ROL AL, CL ;lower 4 bit position 
+  MOV BL, AL 
+  MOV AL, 00H 
+  MOV AH, 00H 
+UP: 
+  ADD AL, 16H ;Multiplication by successive
+  JNC DOWN1 ;add operation and adjust 
+  INC AH ;current sum according to 
+DOWN1:
+  DAA   ;decimal addition 
+  JNC DOWN2 
+  INC AH 
+DOWN2: 
+  DEC BL 
+  JNZ UP 
+  ADD AL, DL ;Add lower nibble to above result
+  JNC DOWN3 ;and adjust it 
+  INC AH 
+DOWN3: 
+  DAA 
+  JNC DOWN4
+  INC AH 
+DOWN4: 
+  MOV DECI, AX   ;Store result 
+ 
+  MOV AH, 4CH ;Terminate program 
+  INT 21H 
+
+CODE ENDS 
+END START
