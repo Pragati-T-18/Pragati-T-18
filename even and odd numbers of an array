@@ -1,0 +1,38 @@
+DATA SEGMENT
+  ARRAY DB 01H,02H,05H,03H,09H,08H,03H,04H,07H,0AH 
+  ODD_C DB 00H ; odd number counter 
+  EVEN_C DB 00H ; even number counter 
+DATA ENDS 
+
+CODE SEGMENT 
+ASSUME DS:DATA, CS:CODE
+
+START: 
+  MOV AX, DATA 
+  MOV DS, AX 
+  MOV CX,0AH ; counter 
+  LEA SI, ARRAY 
+  MOV BL,02
+BACK:
+  MOV AL, [SI]
+  CBW 
+  DIV BL
+  CMP AH,00H 
+  JE DOWN 
+  INC ODD_C 
+  JMP SKIP 
+DOWN: 
+  INC EVEN_C 
+SKIP: 
+  INC SI 
+  DEC CX
+  JNZ BACK ; decrement CX by 1 and goto label 
+  BACK if CX != 0 
+  MOV AL,EVEN_C
+  MOV BL,ODD_C
+
+  MOV AH, 4CH 
+  INT 21H 
+
+CODE ENDS 
+END START
