@@ -1,0 +1,27 @@
+DATA SEGMENT
+   NUM DB 55H 
+   ONES DB 00H 
+DATA ENDS
+
+CODE SEGMENT 
+ASSUME CS:CODE, DS:DATA 
+
+START: 
+   MOV DX, DATA 
+   MOV DS, DX ;Initialize data segment 
+   MOV AL, NUM ;Move NUM to AL 
+   MOV CX, 08H ;Setup a counter with no. of bits in NUM 
+   MOV BL, 00H 
+UP: 
+   ROR AL, 1 ;Rotate AL to right 
+   JNC DOWN ;If CF=0, the LSB was 0 
+   INC BL ;If CF=1, the LSB was 1 
+DOWN: 
+   LOOP UP 
+   MOV NUM, BL 
+
+   MOV AH, 4CH ;Terminate program 
+   INT 21H
+
+CODE ENDS
+END START 
