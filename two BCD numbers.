@@ -1,0 +1,24 @@
+DATA SEGMENT
+     N1 DB 07H
+     N2 DB 08H 
+     Result DB ?
+     CARRY DB ? 
+DATA 
+ENDS 
+CODE SEGMENT 
+ASSUME CS:CODE,DS:DATA 
+START:
+      MOV DX,DATA
+      MOV DS,DX 
+      MOV AL,N1 
+   MOV BL,N2 
+   ADD AL,BL
+   DAA 
+MOV Result ,AL
+   JNC EXIT 
+   MOV CARRY,01 
+EXIT:
+    MOV AH, 4CH 
+    INT 21H 
+    CODE ENDS 
+    END START
