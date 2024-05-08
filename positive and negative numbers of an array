@@ -1,0 +1,32 @@
+DATA SEGMENT
+  ARRAY DB -01H,02H,05H,-03H,-9H,-08H,03H,-04H,07H,0AH 
+  POS_C DB 00H ; positive number counter 
+  NEG_C DB 00H ; negative number counter 
+DATA ENDS 
+
+CODE SEGMENT 
+ASSUME DS:DATA, CS:CODE
+
+START:
+  MOV AX, DATA 
+  MOV DS, AX 
+  MOV CX,0AH ; counter 
+  LEA SI, ARRAY 
+BACK: 
+  MOV AL, [SI] 
+  CMP AL,00H
+  JL DOWN 
+  INC POS_C 
+  JMP SKIP 
+DOWN: 
+  INC NEG_C 
+SKIP:
+  INC SI 
+  DEC CX
+  JNZ BACK ; decrement CX by 1 and goto label BACK if CX != 0 
+  
+  MOV AH, 4CH 
+  INT 21H 
+
+CODE ENDS 
+END START
